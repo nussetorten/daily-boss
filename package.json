@@ -1,0 +1,9 @@
+{
+  "name":"dailyboss",
+  "version":"0.1.0",
+  "description":"A package for GGJ DailyBoss Webapp.",
+  "author":"Nicholas Vitovitch <ngvitovitch@gmail.com>",
+  "dependencies": {
+    "socket.io":"*"
+  }
+}
