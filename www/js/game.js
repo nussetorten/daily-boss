@@ -2,7 +2,7 @@
 enchant();
 
 // variables
-var socket = io.connect('http://ec2-50-17-25-51.compute-1.amazonaws.com:8080');
+var socket = io.connect('http://localhost:8080');//io.connect('http://ec2-50-17-25-51.compute-1.amazonaws.com:8080');
 var game = new Game(1300,700);
 var damage = 0;
 
@@ -28,17 +28,15 @@ game.onload = function() {
 	console.log(data);
 	l_heal.text = "Health: " + data['h'];
 	l_onli.text = "Online: " + data['c'];
-    });
-    socket.on('hits', function(data) {
-	for(i = 0; i < data.length; i++) {
-    	    $('#bam'+i).css('left',data[i]['l'][0]-75+'px');
-	    $('#bam'+i).css('top',data[i]['l'][1]-75+'px');
+	for (var i = 0; i < data.hits.length; i++) {
+    	    $('#bam'+i).css('left',data.hits[i]['l'][0]-75+'px');
+	    $('#bam'+i).css('top',data.hits[i]['l'][1]-75+'px');
 	    $('#bam'+i).show();
 	    $('#bam'+i).fadeOut(1200);
 	    setTimeout(function() {
 		game.assets['aud/tank-shot.wav'].play();
 	    }, i*70);
-	} 
+	}
     });
     
     // My Character Skeleton
@@ -127,7 +125,7 @@ game.onload = function() {
 	s_lleg.moveBy(0,5);
     });
     s_rleg.addEventListener('touchstart', function() {
-	game.assets['aud/tank-shot.wav'].play();
+	dealDamage(1);
 	console.log('hit rleg!');
 	s_rleg.moveBy(0,5);
     });
@@ -154,6 +152,6 @@ function dealDamage(d) {
     game.l_dama.text = "Damage: " + damage;
 
     socket.emit('hit',{d:1,l:[mouseX,mouseY]});
-    game.assets['aud/tank-shot.wav'].play();
+    //game.assets['aud/tank-shot.wav'].play();
     $('#damage').html(damage);
 }
