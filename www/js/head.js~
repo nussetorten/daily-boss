@@ -1,7 +1,0 @@
-mouseX = 0;
-mouseY = 0;
-jQuery(document).ready(function(){
-    $(document).mousemove(function(e){
-	$('#status').html(e.pageX +', '+ e.pageY);
-    }); 
-})
