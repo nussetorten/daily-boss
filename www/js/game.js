@@ -3,6 +3,7 @@ enchant();
 
 // variables
 var socket = io.connect('http://localhost:8080');//io.connect('http://ec2-50-17-25-51.compute-1.amazonaws.com:8080');
+var socket_id = undefined;
 var game = new Game(1300,700);
 var damage = 0;
 
@@ -26,6 +27,8 @@ game.onload = function() {
 
     socket.on('status', function(data) {
 	console.log(data);
+	if (data['id'])
+	    socket_id = data['id'];
 	l_heal.text = "Health: " + data['h'];
 	l_onli.text = "Online: " + data['c'];
 	console.log(damage);

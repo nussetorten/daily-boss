@@ -40,12 +40,14 @@ io.sockets.on('connection', function(socket) {
 	console.log('User asked for status');
 	console.log(creature.getHealth());
 	socket.emit('status',{
+	    'id':socket.id,
 	    'h':creature.getHealth(),
 	    'c':count_players,
 	    'hits':[]});
     });
     socket.on('hit', function(data) {
 	if(game_over){return;}
+	data['client'] = socket.id;
 	var verified_hit = registerHit(data);
 	if (verified_hit) {
 	    socket.emit('status',{
