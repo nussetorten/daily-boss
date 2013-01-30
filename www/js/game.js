@@ -3,6 +3,7 @@ enchant();
 
 // variables
 var socket = io.connect('http://localhost:8080');//io.connect('http://ec2-50-17-25-51.compute-1.amazonaws.com:8080');
+var socket_id = undefined;
 var game = new Game(1300,700);
 var damage = 0;
 
@@ -26,8 +27,17 @@ game.onload = function() {
 
     socket.on('status', function(data) {
 	console.log(data);
+	if (data['id'])
+	    socket_id = data['id'];
 	l_heal.text = "Health: " + data['h'];
 	l_onli.text = "Online: " + data['c'];
+	console.log(damage);
+	if (data['d']) {
+	    damage += data['d'];
+	    game.l_dama.text = "Damage: " + damage;
+	    $('#damage').html(damage);
+	}
+
 	for (var i = 0; i < data.hits.length; i++) {
     	    $('#bam'+i).css('left',data.hits[i]['l'][0]-75+'px');
 	    $('#bam'+i).css('top',data.hits[i]['l'][1]-75+'px');
@@ -100,32 +110,32 @@ game.onload = function() {
         .loop();
    
     s_body.addEventListener('touchstart', function() {
-	dealDamage(1);
+	dealDamage('body');
 	console.log('hit body!');
 	s_body.moveBy(0,-5,1);
     });
     s_head.addEventListener('touchstart', function() {
-	dealDamage(1);
+	dealDamage('head');
 	console.log('hit head!');
 	s_head.moveBy(0,-5);
     });
     s_larm.addEventListener('touchstart', function() {
-	dealDamage(1);
+	dealDamage('larm');
 	console.log('hit larm!');
 	s_larm.moveBy(-5,0);
     });
     s_rarm.addEventListener('touchstart', function() {
-	dealDamage(1);
+	dealDamage('rarm');
 	console.log('hit rarm!');
 	s_rarm.moveBy(5,0);
     });
     s_lleg.addEventListener('touchstart', function() {
-	dealDamage(1);
+	dealDamage('lleg');
 	console.log('hit lleg!');
 	s_lleg.moveBy(0,5);
     });
     s_rleg.addEventListener('touchstart', function() {
-	dealDamage(1);
+	dealDamage('rleg');
 	console.log('hit rleg!');
 	s_rleg.moveBy(0,5);
     });
@@ -147,11 +157,6 @@ game.fps = 30;
 game.start();
 // functions
 
-function dealDamage(d) {
-    damage+=d;
-    game.l_dama.text = "Damage: " + damage;
-
-    socket.emit('hit',{d:1,l:[mouseX,mouseY]});
-    //game.assets['aud/tank-shot.wav'].play();
-    $('#damage').html(damage);
+function dealDamage(part) {
+    socket.emit('hit',{part:part,l:[mouseX,mouseY]});
 }
