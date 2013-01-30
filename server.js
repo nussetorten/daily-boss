@@ -47,10 +47,11 @@ io.sockets.on('connection', function(socket) {
     socket.on('hit', function(data) {
 	if(game_over){return;}
 	var verified_hit = registerHit(data);
-	if (verified_hit != null) {
+	if (verified_hit) {
 	    socket.emit('status',{
 		'h':creature.getHealth(),
 		'c':count_players,
+		'd':verified_hit.damage,
 		'hits':[]});
 	} else {
 	    socket.disconnect();
@@ -92,17 +93,30 @@ function endGame() {
 function registerHit(data) {
     console.log('registering hit');
     // TODO validate data contents damage, location, etc...
+    var damage = undefined;
+    // associate a part with a damage value
+    switch (data['part']) {
+    case 'body' :
+    case 'head' :
+    case 'larm' :
+    case 'rarm' :
+    case 'lleg' :
+    case 'rleg' :
+	damage = 1;
+    }
+    // an undefined body part means trouble
+    if (damage == undefined) {
+	return null;
+    }
+    // only add to the hits if there are not too many hits yet
     if(hits.length < MAX_HITS) {
-	if(data['d'] > MAX_DAMAGE) {
-	    data['d'] = 1;
-	}
-	creature.hit(data['d']);
+	creature.hit(damage);
 	if (creature.isDead()) {
 	    endGame();
 	}
 	hits.push(data);
     } 
-    return data;
+    return {damage:damage};
 }
 
 
