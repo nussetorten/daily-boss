@@ -43,6 +43,9 @@ game.onload = function() {
 	    $('#bam'+i).css('top',data.hits[i]['l'][1]-75+'px');
 	    $('#bam'+i).show();
 	    $('#bam'+i).fadeOut(1200);
+	    // burdening the system / user?
+	    // playing `hits.length` pieces of audio data where the audio may
+            // overlap with the next call to socket.on('status')
 	    setTimeout(function() {
 		game.assets['aud/tank-shot.wav'].play();
 	    }, i*70);

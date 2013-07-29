@@ -1,7 +1,7 @@
 // GLOBAL CONSTs
-var PORT = 8080;
-var MAX_HITS = 20;
-var MAX_DAMAGE = 100;
+const PORT = 8080;
+const MAX_HITS = 20;
+const MAX_DAMAGE = 100;
 
 // REQUIREs
 var app = require('http').createServer(handler);
@@ -13,7 +13,7 @@ var crypto = require('crypto');
 // Creature
 function Creature() {
     var health = 5000;
-    this.getHealth = function() { return health; }
+    this.getHealth = function() { return health; };
     this.isDead = function() { return (health <= 0); };
     this.hit = function(damage) {
 	console.log('creature - registering hit');
@@ -117,8 +117,9 @@ function registerHit(data) {
 	    endGame();
 	}
 	hits.push(data);
+        return {damage:damage};
     } 
-    return {damage:damage};
+    return {damage:0};
 }
 
 
